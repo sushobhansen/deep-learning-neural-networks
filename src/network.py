@@ -36,7 +36,7 @@ class Network:
 		Performs a stochastic gradient descent on the training data to tune the weights and biases
 		A mini-batch SGD is used to sample the data to tune it, and this is done for several epochs
 		training_data is a tuple (x,y) of inputs and desired outputs
-		eta is the gradient descent step size
+		eta is the gradient descent step size (learning rate)
 		If test_data is provided, then the function analyzed the test data and prints output
 		'''
 		
@@ -51,13 +51,35 @@ class Network:
 			mini_batches = [training_data[k:k+mini_batch_size] for k in range(0,n,mini_batch_size)]
 			
 			for mini_batch in mini-batches:
-				self.update_mini_batch(mini_batch, eta) #Gradient descent on the mini-batch
+				self.update_mini_batch(mini_batch, eta) #Gradient descent on the mini-batch (single step)
 			
 			if test_data:
 				print('Epoch ',j,': ',self.evaluate(test_data),' / ',n_test)
 			else:
 				print('Epoch ',j,' complete')
 
+	def update_mini_batch(self,mini_batch,eta):
+		'''
+		Updates the mini-batch by applying a single gradient descent step of size eta
+		Mini-batch is a list of tuples (x,y) 
+		'''
+		
+		m = len(mini_batch)
+		nabla_b = [np.zeros(b.shape) for b in self.biases]
+		nabla_w = [np.zeros(w.shape) for w in self.weights]
+		
+		for x,y in mini-batch:
+			delta_nabla_b, delta_nabla_w = self.backprop(x,y)
+				
+			#Calculate gradients
+			nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
+			nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
+				
+		#Update weights and biases
+		self.weights = [w-(eta/m)*nw for w, nw in zip(self.weights, nabla_w)]
+		self.biases = [b-(eta/m)*nb for b, nb in zip(self.biases,nabla_b)]
+				
+		
 #Define sigmoid function
 def sigmoid(z):
 	return 1.0/(1.0 + np.exp(-z))
