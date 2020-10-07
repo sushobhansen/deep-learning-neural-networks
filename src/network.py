@@ -50,7 +50,7 @@ class Network:
 			#Create mini-batches by sampling the shuffled training data
 			mini_batches = [training_data[k:k+mini_batch_size] for k in range(0,n,mini_batch_size)]
 			
-			for mini_batch in mini-batches:
+			for mini_batch in mini_batches:
 				self.update_mini_batch(mini_batch, eta) #Gradient descent on the mini-batch (single step)
 			
 			if test_data:
@@ -68,7 +68,7 @@ class Network:
 		nabla_b = [np.zeros(b.shape) for b in self.biases]
 		nabla_w = [np.zeros(w.shape) for w in self.weights]
 		
-		for x,y in mini-batch:
+		for x,y in mini_batch:
 			delta_nabla_b, delta_nabla_w = self.backprop(x,y)
 				
 			#Calculate gradients
@@ -90,7 +90,7 @@ class Network:
 		#feedforward
 		activation = x
 		activations = [x] #stores all activations, layer by layer
-		zx = [] #stores all z vectors, layer by layer
+		zs = [] #stores all z vectors, layer by layer
 
 		for b,w in zip(self.biases,self.weights):
 			z = np.dot(w,activation)+b
@@ -103,12 +103,12 @@ class Network:
 		nabla_b[-1] = delta
 		nabla_w[-1] = np.dot(delta,activations[-2].transpose())
 
-		for l in range(2,self.num_layers):
-			z = zs[-1]
+		for l in range(2, self.num_layers):
+			z = zs[-l]
 			sp = sigmoid_prime(z)
-			delta = np.dot(self.weights[-l+1].transpose(),delta)*sp
+			delta = np.dot(self.weights[-l+1].transpose(), delta) * sp
 			nabla_b[-l] = delta
-			nabla_w[-l] = np.dot(delta,activations[-l-1].transpose())
+			nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
 		return (nabla_b,nabla_w)
 
 	def evaluate(self,test_data):
