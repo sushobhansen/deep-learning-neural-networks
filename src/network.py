@@ -65,13 +65,13 @@ class Network:
 		'''
 		
 		m = len(mini_batch)
-		nabla_b = [np.zeros(b.shape) for b in self.biases]
-		nabla_w = [np.zeros(w.shape) for w in self.weights]
+		nabla_b = [np.zeros(b.shape) for b in self.biases] #dC/db
+		nabla_w = [np.zeros(w.shape) for w in self.weights] #dC/dw
 		
 		for x,y in mini_batch:
 			delta_nabla_b, delta_nabla_w = self.backprop(x,y)
 				
-			#Calculate gradients
+			#Calculate gradients, adding over mini-batches
 			nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
 			nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
 				
